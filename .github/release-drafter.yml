@@ -1,0 +1,2 @@
+_extends: .github
+tag-template: telegram-notification-$NEXT_MINOR_VERSION
