@@ -1,5 +1,6 @@
 package io.jenkins.plugins.sample;
 
+import bot.JenkinsTelegramBot;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.FilePath;
@@ -7,7 +8,11 @@ import hudson.Launcher;
 import hudson.model.*;
 import hudson.tasks.*;
 import jenkins.tasks.SimpleBuildStep;
+import lombok.SneakyThrows;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -15,7 +20,7 @@ import java.io.PrintStream;
 public class PostNotificationBuilder extends Notifier implements SimpleBuildStep {
 
     @DataBoundConstructor
-    public PostNotificationBuilder() {
+    public PostNotificationBuilder() throws TelegramApiException {
     }
 
     @Override
@@ -37,6 +42,7 @@ public class PostNotificationBuilder extends Notifier implements SimpleBuildStep
         }
     }
 
+    @SneakyThrows
     @Override
     public void perform(@NonNull Run<?, ?> run,
                         @NonNull FilePath workspace,
@@ -47,5 +53,12 @@ public class PostNotificationBuilder extends Notifier implements SimpleBuildStep
 
         prinstream.println("dlmfkjdksls;fnjdklsfjskdsjsfksdjfdkfjgkdfdlsngf,mdcdnjgrkksdvnthldrtknv");
         prinstream.println(result);
+        TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+
+        try {
+            botsApi.registerBot(new JenkinsTelegramBot(result.toString()));
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 }
